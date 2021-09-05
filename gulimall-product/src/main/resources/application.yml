@@ -9,11 +9,13 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
 
 mybatis-plus:
-  # sql\u6620\u5C04\u6587\u4EF6
   mapper-locations: classpath:/mapper/**/*.xml
-  # \u4E3B\u952E\u81EA\u589E
   global-config:
     db-config:
       id-type: auto
