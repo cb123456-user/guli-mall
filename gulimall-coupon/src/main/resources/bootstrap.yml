@@ -1,0 +1,12 @@
+# 加载指定配置
+# ${spring.application.name}-${spring.profile.active}.${spring.cloud.nacos.config.file-extension}
+#spring:
+#  application:
+#    name: gulimall-coupon
+#  cloud:
+#    nacos:
+#      config:
+#        server-addr: 127.0.0.1:8848
+#        namespace: 24e2ca15-5964-4d06-a89a-c5e302b383c1
+#        group: dev
+#        file-extension: yaml
