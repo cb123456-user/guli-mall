@@ -50,7 +50,7 @@ public class CategoryController {
     public R info(@PathVariable("catId") Long catId) {
         CategoryEntity category = categoryService.getById(catId);
 
-        return R.ok().put("category", category);
+        return R.ok().put("data", category);
     }
 
     /**
@@ -67,10 +67,10 @@ public class CategoryController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @RequestMapping("/update/sort")
 //    @RequiresPermissions("product:category:update")
-    public R update(@RequestBody CategoryEntity category) {
-        categoryService.updateById(category);
+    public R update(@RequestBody List<CategoryEntity> category) {
+        categoryService.updateBatchById(category);
 
         return R.ok();
     }
@@ -80,8 +80,11 @@ public class CategoryController {
      */
     @RequestMapping("/delete")
 //    @RequiresPermissions("product:category:delete")
-    public R delete(@RequestBody Long[] catIds) {
-        categoryService.removeByIds(Arrays.asList(catIds));
+    public R delete(@RequestBody List<Long> catIds) {
+        // 需要校验分类是否被引用，未引用才可以删除
+//        categoryService.removeByIds(Arrays.asList(catIds));
+
+        categoryService.deleteByIds(catIds);
 
         return R.ok();
     }

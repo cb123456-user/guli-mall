@@ -18,6 +18,7 @@
         <commons.lang.version>2.6</commons.lang.version>
         <mybatis.plus.version>3.4.0</mybatis.plus.version>
         <mysql.version>8.0.17</mysql.version>
+        <hutool.version>5.7.12</hutool.version>
     </properties>
 
     <dependencies>
@@ -62,6 +63,12 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
 
     </dependencies>
