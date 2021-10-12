@@ -1,6 +1,8 @@
 package com.cb.gulimall.coupon.service.impl;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -11,6 +13,7 @@ import com.cb.common.utils.Query;
 import com.cb.gulimall.coupon.dao.MemberPriceDao;
 import com.cb.gulimall.coupon.entity.MemberPriceEntity;
 import com.cb.gulimall.coupon.service.MemberPriceService;
+import org.springframework.util.CollectionUtils;
 
 
 @Service("memberPriceService")
@@ -24,6 +27,14 @@ public class MemberPriceServiceImpl extends ServiceImpl<MemberPriceDao, MemberPr
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public void saveMemberPrices(List<MemberPriceEntity> memberPriceEntities) {
+        if(CollectionUtils.isEmpty(memberPriceEntities)){
+            return;
+        }
+        this.saveBatch(memberPriceEntities);
     }
 
 }

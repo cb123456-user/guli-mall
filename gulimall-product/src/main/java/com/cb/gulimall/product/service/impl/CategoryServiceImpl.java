@@ -1,11 +1,10 @@
 package com.cb.gulimall.product.service.impl;
 
+import com.cb.gulimall.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,6 +16,8 @@ import com.cb.common.utils.Query;
 import com.cb.gulimall.product.dao.CategoryDao;
 import com.cb.gulimall.product.entity.CategoryEntity;
 import com.cb.gulimall.product.service.CategoryService;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 
 @Service("categoryService")
@@ -25,6 +26,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     // 因为父类已经继承了BaseMapper，可以直接用baseMapper
 //    @Autowired
 //    private CategoryDao categoryDao;
+
+    @Autowired
+    private CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -64,8 +68,49 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         baseMapper.deleteBatchIds(catIds);
     }
 
+    @Override
+    public Long[] getCategoryPath(Long catelogId) {
+        List<Long> path = new ArrayList<>();
+        getParentPath(catelogId, path);
+        // 完整路径需要从一级到三级，所以反转一下
+        Collections.reverse(path);
+        return path.toArray(new Long[path.size()]);
+    }
+
+    @Override
+    @Transactional
+    public void updateCascade(CategoryEntity category) {
+        // 更新分类
+        this.updateById(category);
+
+        // 级联更新，保证冗余数据一致性
+        String name = category.getName();
+        if (!StringUtils.isEmpty(name)) {
+            // 分类
+            categoryBrandRelationService.updateCtegory(category.getCatId(), name);
+        }
+    }
+
+    /**
+     * 分类完整路径：三级到一级
+     * 255,34,2
+     *
+     * @param catelogId
+     * @param path
+     * @return
+     */
+    private List<Long> getParentPath(Long catelogId, List<Long> path) {
+        path.add(catelogId);
+        CategoryEntity category = baseMapper.selectById(catelogId);
+        if (0 != category.getParentCid()) {
+            getParentPath(category.getParentCid(), path);
+        }
+        return path;
+    }
+
     /**
      * 递归设置子分类
+     *
      * @param root
      * @param entities
      * @return

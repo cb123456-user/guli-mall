@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * spu信息
@@ -17,6 +18,7 @@ import lombok.Data;
  */
 @Data
 @TableName("pms_spu_info")
+@Accessors(chain = true)
 public class SpuInfoEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

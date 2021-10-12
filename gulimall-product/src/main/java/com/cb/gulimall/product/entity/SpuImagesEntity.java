@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * spu图片
@@ -15,6 +16,7 @@ import lombok.Data;
  * @date 2021-08-29 16:51:48
  */
 @Data
+@Accessors(chain = true)
 @TableName("pms_spu_images")
 public class SpuImagesEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

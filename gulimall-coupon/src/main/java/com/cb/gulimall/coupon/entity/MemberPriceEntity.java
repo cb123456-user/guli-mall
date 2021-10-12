@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 商品会员价格
@@ -16,6 +17,7 @@ import lombok.Data;
  * @date 2021-08-29 21:10:55
  */
 @Data
+@Accessors(chain = true)
 @TableName("sms_member_price")
 public class MemberPriceEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

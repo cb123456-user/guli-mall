@@ -18,6 +18,9 @@ spring:
       secret-key: wTfzor3WQwICo9qQM2KDGTYSNVPNxH
       oss:
         endpoint: oss-cn-shanghai.aliyuncs.com
+  # 输出时间格式统一处理
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml

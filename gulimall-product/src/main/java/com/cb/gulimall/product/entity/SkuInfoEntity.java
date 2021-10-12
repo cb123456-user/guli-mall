@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * sku信息
@@ -16,6 +17,7 @@ import lombok.Data;
  * @date 2021-08-29 16:51:48
  */
 @Data
+@Accessors(chain = true)
 @TableName("pms_sku_info")
 public class SkuInfoEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -50,7 +52,7 @@ public class SkuInfoEntity implements Serializable {
 	 */
 	private String skuDefaultImg;
 	/**
-	 * 标题
+	 * get
 	 */
 	private String skuTitle;
 	/**

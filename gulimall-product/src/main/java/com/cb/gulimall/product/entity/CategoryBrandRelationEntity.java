@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 品牌分类关联
@@ -14,6 +15,7 @@ import lombok.Data;
  * @email chenbin@gmail.com
  * @date 2021-08-29 16:51:48
  */
+@Accessors(chain = true)
 @Data
 @TableName("pms_category_brand_relation")
 public class CategoryBrandRelationEntity implements Serializable {
