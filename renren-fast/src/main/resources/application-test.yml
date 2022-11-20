@@ -5,7 +5,7 @@ spring:
             driver-class-name: com.mysql.cj.jdbc.Driver
             url: jdbc:mysql://localhost:3306/renren_fast?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
             username: renren
-            password: 123456
+            password: cb123456
             initial-size: 10
             max-active: 100
             min-idle: 10
@@ -41,9 +41,9 @@ spring:
 #      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 #      url: jdbc:sqlserver://localhost:1433;DatabaseName=renren_security
 #      username: sa
-#      password: 123456
+#      password: cb123456
 #    slave2:
 #      driver-class-name: org.postgresql.Driver
 #      url: jdbc:postgresql://localhost:5432/renren_security
 #      username: renren
-#      password: 123456
+#      password: cb123456

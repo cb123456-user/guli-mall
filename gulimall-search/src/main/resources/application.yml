@@ -6,11 +6,11 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: 1.15.107.138:8848
   thymeleaf:
     cache: false
   redis:
-    host: 169.254.37.10
+    host: 1.15.107.138
     port: 6379
   session:
       store-type: redis

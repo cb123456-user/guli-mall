@@ -13,7 +13,7 @@ public class MyRedisConfig {
     public RedissonClient redisson() {
         Config config = new Config();
         // Redis url should start with redis:// or rediss:// (for SSL connection)
-        config.useSingleServer().setAddress("redis://169.254.37.10:6379");
+        config.useSingleServer().setAddress("redis://1.15.107.138:6379");
         RedissonClient redisson = Redisson.create(config);
         return redisson;
     }
