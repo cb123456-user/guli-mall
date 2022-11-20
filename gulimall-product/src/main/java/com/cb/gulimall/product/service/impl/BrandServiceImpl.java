@@ -3,8 +3,10 @@ package com.cb.gulimall.product.service.impl;
 import com.alibaba.nacos.client.utils.StringUtils;
 import com.cb.gulimall.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -57,6 +59,14 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
 
         }
 
+    }
+
+    @Cacheable(value = "brand", key = "#root.method.name + #root.args")
+    @Override
+    public List<BrandEntity> getByIds(List<Long> brandIds) {
+
+        return this.list(new QueryWrapper<BrandEntity>().lambda()
+                .in(BrandEntity::getBrandId, brandIds));
     }
 
 }

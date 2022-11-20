@@ -1,5 +1,6 @@
 package com.cb.gulimall.product.service.impl;
 
+import com.cb.gulimall.product.vo.SkuAttrVo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +37,17 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
             return;
         }
         this.saveBatch(skuSaleAttrValueEntities);
+    }
+
+    @Override
+    public List<SkuAttrVo> selectSkuAttrBySpuId(Long spuId) {
+        return this.baseMapper.selectSkuAttrBySpuId(spuId);
+
+    }
+
+    @Override
+    public List<String> getSkuSaleAttrValuesBySkuId(Long skuId) {
+        return this.baseMapper.getSkuSaleAttrValuesBySkuId(skuId);
     }
 
 }

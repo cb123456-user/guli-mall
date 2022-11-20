@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 商品库存
@@ -15,6 +16,7 @@ import lombok.Data;
  * @date 2021-08-29 21:28:06
  */
 @Data
+@Accessors(chain = true)
 @TableName("wms_ware_sku")
 public class WareSkuEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

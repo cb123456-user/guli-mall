@@ -1,6 +1,7 @@
 package com.cb.gulimall.thirdpart;
 
 import com.aliyun.oss.OSS;
+import com.cb.gulimall.thirdpart.component.SmsComponent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,15 @@ class GulimallThirdPartApplicationTests {
 
     @Autowired
     private OSS ossClient;
+
+    @Autowired
+    private SmsComponent smsComponent;
+
+    @Test
+    public void testSendCode(){
+        smsComponent.sendCode("18206722039", "24668");
+    }
+
 
     /**
      * 测试oss文件上传

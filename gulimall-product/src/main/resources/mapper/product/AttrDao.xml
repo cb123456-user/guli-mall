@@ -16,5 +16,26 @@
         <result property="showDesc" column="show_desc"/>
     </resultMap>
 
+    <resultMap id="spuGroupAttrs" type="com.cb.gulimall.product.vo.SpuGroupAttrVo">
+        <result property="groupName" column="attr_group_name"/>
+        <collection property="attrs" ofType="com.cb.gulimall.product.vo.SpuBaseAttrVo">
+            <result property="attrName" column="attr_name"/>
+            <result property="attValue" column="attr_value"/>
+        </collection>
+    </resultMap>
+
+    <select id="getSpuGroupAttrs" resultMap="spuGroupAttrs">
+        select ag.attr_group_id,
+            ag.attr_group_name,
+            aar.attr_id,
+            a.attr_name,
+            pav.attr_value
+        from pms_attr_group ag
+        LEFT JOIN pms_attr_attrgroup_relation aar on ag.attr_group_id = aar.attr_group_id
+        LEFT JOIN pms_attr a on aar.attr_id = a.attr_id
+        LEFT JOIN pms_product_attr_value pav on a.attr_id = pav.attr_id
+        where ag.catelog_id = #{catalogId} and pav.spu_id = #{spuId}
+    </select>
+
 
 </mapper>

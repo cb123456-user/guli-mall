@@ -5,20 +5,19 @@ import com.cb.common.constant.ProductConstant;
 import com.cb.gulimall.product.dao.AttrAttrgroupRelationDao;
 import com.cb.gulimall.product.dao.AttrGroupDao;
 import com.cb.gulimall.product.dao.CategoryDao;
-import com.cb.gulimall.product.entity.AttrAttrgroupRelationEntity;
-import com.cb.gulimall.product.entity.AttrGroupEntity;
-import com.cb.gulimall.product.entity.CategoryEntity;
+import com.cb.gulimall.product.entity.*;
 import com.cb.gulimall.product.service.CategoryService;
 import com.cb.gulimall.product.vo.AttrRespVo;
 import com.cb.gulimall.product.vo.AttrVo;
+import com.cb.gulimall.product.vo.SpuGroupAttrVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -27,7 +26,6 @@ import com.cb.common.utils.PageUtils;
 import com.cb.common.utils.Query;
 
 import com.cb.gulimall.product.dao.AttrDao;
-import com.cb.gulimall.product.entity.AttrEntity;
 import com.cb.gulimall.product.service.AttrService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -140,6 +138,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         return pageUtils;
     }
 
+    @Cacheable(value = "attr", key = "#root.method.name + #root.args")
     @Override
     public AttrRespVo getAttrRespVo(Long attrId) {
         AttrRespVo attrRespVo = new AttrRespVo();
@@ -243,6 +242,21 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         IPage<AttrEntity> iPage = this.baseMapper.selectPage(new Query<AttrEntity>().getPage(params), queryWrapper);
         PageUtils pageUtils = new PageUtils(iPage);
         return pageUtils;
+    }
+
+    @Override
+    public List<Long> getSearchAttrIds(List<Long> attrIds) {
+        List<AttrEntity> attrEntities = list(new QueryWrapper<AttrEntity>().lambda()
+                .select(AttrEntity::getAttrId)
+                .eq(AttrEntity::getSearchType, 1)
+                .in(AttrEntity::getAttrId, attrIds)
+        );
+        return attrEntities.stream().map(AttrEntity::getAttrId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SpuGroupAttrVo> getSpuGroupAttrs(Long spuId, Long catalogId) {
+        return this.baseMapper.getSpuGroupAttrs(spuId, catalogId);
     }
 
     /**

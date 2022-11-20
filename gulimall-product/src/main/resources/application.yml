@@ -1,5 +1,5 @@
 server:
-  port: 10000
+  port: 20000
 
 spring:
   application:
@@ -21,6 +21,13 @@ spring:
   # 输出时间格式统一处理
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+  # 开发时关闭缓存
+  thymeleaf:
+    cache: false
+  redis:
+    host: 169.254.37.10
+    port: 6379
+
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -32,4 +39,3 @@ mybatis-plus:
 logging:
   level:
     com.cb.gulimall.product: debug
-

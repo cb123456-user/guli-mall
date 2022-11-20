@@ -9,9 +9,16 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
     alicloud:
+      # 已经删除并且提交的AK/SK
       access-key: LTAI5tDR9sZfyHXsvtjMDB8N
       secret-key: wTfzor3WQwICo9qQM2KDGTYSNVPNxH
       oss:
         endpoint: oss-cn-shanghai.aliyuncs.com
         bucket: gulimall-cb
+      sms:
+        host: https://dfsns.market.alicloudapi.com
+        path: /data/send_sms
+        method: POST
+        appcode: 596b27b0a196486bb03cde77ff81ecd1
+        templateId: TPL_0000
 

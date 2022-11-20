@@ -1,8 +1,10 @@
 package com.cb.gulimall.product.exception;
 
 import com.cb.common.exception.BzipCodeEnum;
+import com.cb.common.exception.RRException;
 import com.cb.common.utils.R;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -26,8 +28,14 @@ public class ExceptionHandleController {
                 .put("data", map);
     }
 
+    @ExceptionHandler(RRException.class)
+    public R rRException(RRException e) {
+        log.error("class {}, error {}", e.getClass(), e.getMessage());
+        return R.error(BzipCodeEnum.DATA_EXCEPTION.getCode(), !StringUtils.isEmpty(e.getMsg()) ? e.getMsg() : BzipCodeEnum.DATA_EXCEPTION.getMsg());
+    }
+
     @ExceptionHandler(Throwable.class)
-    public R Throwable(Throwable e) {
+    public R throwable(Throwable e) {
         log.error("param valid faild, class {}, error {}", e.getClass(), e.getMessage());
         return R.error(BzipCodeEnum.UNKNOW_EXCEPTION.getCode(), BzipCodeEnum.UNKNOW_EXCEPTION.getMsg());
     }

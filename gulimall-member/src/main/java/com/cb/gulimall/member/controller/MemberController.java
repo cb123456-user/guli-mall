@@ -3,6 +3,12 @@ package com.cb.gulimall.member.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.cb.common.exception.BzipCodeEnum;
+import com.cb.common.vo.MemberLoginVo;
+import com.cb.common.vo.MemberRegistVo;
+import com.cb.common.vo.SocialUser;
+import com.cb.gulimall.member.exceptiion.PhoneExistException;
+import com.cb.gulimall.member.exceptiion.UserNameExistException;
 import com.cb.gulimall.member.feign.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +34,44 @@ public class MemberController {
 
     @Autowired
     private CouponService couponService;
+
+    /**
+     * 社交登录
+     * @param socialUser
+     * @return
+     */
+    @PostMapping("/oauth2/login")
+    public R oauth2Login(@RequestBody SocialUser socialUser) {
+        MemberEntity memberEntity = memberService.login(socialUser);
+        if (memberEntity == null) {
+            return R.error(BzipCodeEnum.LOGIN_VALID_EXCEPTION.getCode(), BzipCodeEnum.VALID_FAILD_EXCEPTION.getMsg());
+        }
+
+        return R.ok().setData(memberEntity);
+    }
+
+    @PostMapping("/login")
+    public R login(@RequestBody MemberLoginVo vo) {
+        MemberEntity memberEntity = memberService.login(vo);
+        if (memberEntity == null) {
+            return R.error(BzipCodeEnum.LOGIN_VALID_EXCEPTION.getCode(), BzipCodeEnum.VALID_FAILD_EXCEPTION.getMsg());
+        }
+
+        return R.ok().setData(memberEntity);
+    }
+
+    @PostMapping("/resist")
+    public R resist(@RequestBody MemberRegistVo vo) {
+        try {
+            memberService.resist(vo);
+        } catch (UserNameExistException e) {
+            return R.error(BzipCodeEnum.USER_EXIST_EXCEPTION.getCode(), BzipCodeEnum.USER_EXIST_EXCEPTION.getMsg());
+        } catch (PhoneExistException e) {
+            return R.error(BzipCodeEnum.PHONE_EXIST_EXCEPTION.getCode(), BzipCodeEnum.PHONE_EXIST_EXCEPTION.getMsg());
+        }
+
+        return R.ok();
+    }
 
     @GetMapping("/test")
     public R test() {

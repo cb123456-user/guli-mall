@@ -3,7 +3,7 @@
 
 <mapper namespace="com.cb.gulimall.ware.dao.WareSkuDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.cb.gulimall.ware.entity.WareSkuEntity" id="wareSkuMap">
         <result property="id" column="id"/>
         <result property="skuId" column="sku_id"/>
@@ -12,6 +12,12 @@
         <result property="skuName" column="sku_name"/>
         <result property="stockLocked" column="stock_locked"/>
     </resultMap>
+    <update id="updateStock">
+        update wms_ware_sku set stock = stock + #{stockVo.stock} where sku_id = #{stockVo.skuId} and ware_id = #{stockVo.wareId}
+    </update>
+    <select id="getSkuStockskuId" resultType="java.lang.Long">
+        select sum(stock - stock_locked) stock from wms_ware_sku where sku_id = #{skuId}
+    </select>
 
 
 </mapper>

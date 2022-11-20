@@ -27,6 +27,7 @@ import com.cb.common.utils.R;
 @RestController
 @RequestMapping("ware/purchasedetail")
 public class PurchaseDetailController {
+
     @Autowired
     private PurchaseDetailService purchaseDetailService;
 

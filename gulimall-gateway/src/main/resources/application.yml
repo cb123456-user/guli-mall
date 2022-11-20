@@ -1,7 +1,76 @@
-#server:
-#  port: 88
-#
-#spring:
-#  application:
-#    name: gulimall-gateway
+server:
+  port: 88
 
+spring:
+  application:
+    name: gulimall-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: route-baidu
+          uri: https://www.baidu.com
+          predicates:
+            - Query=url,baidu
+
+        - id: product-route
+          uri: lb://gulimall-product
+          predicates:
+            - Path=/api/product/**,/hello
+          filters:
+            - RewritePath=/api/?(?<segment>.*), /$\{segment}
+
+        - id: third-part-route
+          uri: lb://gulimall-third-part
+          predicates:
+            - Path=/api/thirdpart/**
+          filters:
+            - RewritePath=/api/thirdpart/?(?<segment>.*), /$\{segment}
+
+        - id: member-route
+          uri: lb://gulimall-member
+          predicates:
+            - Path=/api/member/**
+          filters:
+            - RewritePath=/api/?(?<segment>.*), /$\{segment}
+
+        - id: ware-route
+          uri: lb://gulimall-ware
+          predicates:
+            - Path=/api/ware/**
+          filters:
+            - RewritePath=/api/?(?<segment>.*), /$\{segment}
+
+        - id: admin-route
+          uri: lb://renren-fast
+          predicates:
+            - Path=/api/**
+          filters:
+            - RewritePath=/api/?(?<segment>.*), /renren-fast/$\{segment}
+
+        - id: gilimall-host-route
+          uri: lb://gulimall-product
+          predicates:
+            - Host=www.gulimall.com,gulimall.com,item.gulimall.com
+
+        - id: gilimall-search-route
+          uri: lb://gulimall-search
+          predicates:
+            - Host=search.gulimall.com
+
+        - id: gilimall-auth-route
+          uri: lb://gulimall-auth-service
+          predicates:
+            - Host=auth.gulimall.com
+
+        - id: gilimall-cart-route
+          uri: lb://gulimall-cart
+          predicates:
+            - Host=cart.gulimall.com
+
+        - id: gilimall-order-route
+          uri: lb://gulimall-order
+          predicates:
+            - Host=order.gulimall.com

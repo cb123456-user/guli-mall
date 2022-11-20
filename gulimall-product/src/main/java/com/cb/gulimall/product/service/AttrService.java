@@ -5,6 +5,7 @@ import com.cb.common.utils.PageUtils;
 import com.cb.gulimall.product.entity.AttrEntity;
 import com.cb.gulimall.product.vo.AttrRespVo;
 import com.cb.gulimall.product.vo.AttrVo;
+import com.cb.gulimall.product.vo.SpuGroupAttrVo;
 
 import java.util.List;
 import java.util.Map;
@@ -31,5 +32,9 @@ public interface AttrService extends IService<AttrEntity> {
     List<AttrEntity> getRelationAttr(Long attrgroupId);
 
     PageUtils getNoRelationAttrPage(Map<String, Object> params, Long attrgroupId);
+
+    List<Long> getSearchAttrIds(List<Long> attrIds);
+
+    List<SpuGroupAttrVo> getSpuGroupAttrs(Long spuId, Long catalogId);
 }
 
