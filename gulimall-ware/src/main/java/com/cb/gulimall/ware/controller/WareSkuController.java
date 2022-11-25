@@ -4,7 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.cb.common.exception.BzipCodeEnum;
+import com.cb.common.exception.NoStockException;
 import com.cb.gulimall.ware.vo.SkuHasStockVo;
+import com.cb.gulimall.ware.vo.SkuStockLockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +30,21 @@ import com.cb.common.utils.R;
 public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
+
+    /**
+     * 订单商品库存锁定
+     * @param skuStockLockVo
+     * @return
+     */
+    @PostMapping("/sku/stock/lock")
+    public R skuStockLock(@RequestBody SkuStockLockVo skuStockLockVo) {
+        try {
+            wareSkuService.skuStockLock(skuStockLockVo);
+            return R.ok();
+        } catch (NoStockException e) {
+            return R.error(BzipCodeEnum.NO_STOCK_EXCEPTION.getCode(), BzipCodeEnum.NO_STOCK_EXCEPTION.getMsg());
+        }
+    }
 
     /**
      * 查询sku是否有库存

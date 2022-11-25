@@ -1,7 +1,6 @@
-package com.cb.gulimall.order.vo;
+package com.cb.gulimall.ware.vo;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.List;
  * date：2020/6/30 16:38
  */
 @Data
-@Accessors(chain = true)
 public class OrderItemVo {
 
     private Long skuId;

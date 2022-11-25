@@ -1,9 +1,12 @@
 package com.cb.gulimall.order.feign;
 
 import com.cb.common.utils.R;
+import com.cb.gulimall.order.vo.SkuStockLockVo;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -17,4 +20,10 @@ public interface WareFeignService {
 
     @PostMapping("/ware/waresku/hashstock")
     public R hashstock(@RequestBody List<Long> skuIdList);
+
+    @GetMapping("/ware/wareinfo/fare")
+    public R fare(@RequestParam("addrId") Long addrId);
+
+    @PostMapping("/ware/waresku/sku/stock/lock")
+    public R skuStockLock(@RequestBody SkuStockLockVo skuStockLockVo);
 }

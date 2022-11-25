@@ -588,7 +588,7 @@
 			<!--</div>-->
 		<!--</div>-->
 		<!--主体部分-->
-		<p class="p1">填写并核对订单信息</p>
+		<p class="p1">填写并核对订单信息 <span style="color: red" th:if="${msg != null}" th:text="${msg}"></p>
 		<div class="section">
 			<!--收货人信息-->
 			<div class="top-2">
@@ -720,7 +720,12 @@
 				<p class="yfze_a"><span class="z">应付总额：</span><span class="hq">￥<b id="payPrice">[[${#numbers.formatDecimal(orderConfirmData.payPrice,1,2)}]]</b></span></p>
 				<p class="yfze_b">寄送至：<span id="recieveAddressEle"></span>  收货人： <span id="recieveEle"></span></p>
 			</div>
-			<button class="tijiao">提交订单</button>
+			<form action="http://order.gulimall.com/submitOrder" method="post">
+				<input id="addrIdInput" type="hidden" name="addrId"/>
+				<input id="payPriceInput" type="hidden" name="payPrice"/>
+				<input type="hidden" name="orderToken" th:value="${orderConfirmData.orderToken}"/>
+				<button class="tijiao" type="submit">提交订单</button>
+			</form>
 		</div>
 		</div>
 
@@ -988,7 +993,7 @@
 					var total = [[${orderConfirmData.totalPrice}]];
 					total = total * 1 + data.data.fare * 1;
 					$("#payPrice").text(total);
-					// $("#payPriceInput").val(total);
+					$("#payPriceInput").val(total);
 					// console.log(data)
 					// layer.msg("总金额：" + total + "元")
 					$("#recieveAddressEle").text(data.data.memberAddressVo.province + "  " + data.data.memberAddressVo.city + " " + data.data.memberAddressVo.detailAddress);

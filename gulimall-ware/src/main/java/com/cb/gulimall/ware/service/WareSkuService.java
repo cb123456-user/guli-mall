@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.cb.common.utils.PageUtils;
 import com.cb.gulimall.ware.entity.WareSkuEntity;
 import com.cb.gulimall.ware.vo.SkuHasStockVo;
+import com.cb.gulimall.ware.vo.SkuStockLockVo;
 import com.cb.gulimall.ware.vo.StockVo;
 
 import java.util.List;
@@ -23,5 +24,7 @@ public interface WareSkuService extends IService<WareSkuEntity> {
     void addStock(StockVo stockVo);
 
     List<SkuHasStockVo> hasStock(List<Long> skuIdList);
+
+    void skuStockLock(SkuStockLockVo skuStockLockVo);
 }
 

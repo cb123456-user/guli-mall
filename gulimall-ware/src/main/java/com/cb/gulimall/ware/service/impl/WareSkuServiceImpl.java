@@ -1,10 +1,13 @@
 package com.cb.gulimall.ware.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.cb.common.exception.NoStockException;
 import com.cb.common.utils.R;
 import com.cb.gulimall.ware.entity.PurchaseDetailEntity;
 import com.cb.gulimall.ware.feign.ProductFeignService;
+import com.cb.gulimall.ware.vo.OrderItemVo;
 import com.cb.gulimall.ware.vo.SkuHasStockVo;
+import com.cb.gulimall.ware.vo.SkuStockLockVo;
 import com.cb.gulimall.ware.vo.StockVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +100,37 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             return vo;
         }).collect(Collectors.toList());
         return stockVos;
+    }
+
+    @Transactional(rollbackFor = NoStockException.class)
+    @Override
+    public void skuStockLock(SkuStockLockVo skuStockLockVo) {
+
+        // [理论上]1. 按照下单的收获地址 找到一个就近仓库, 锁定库存
+        // [实际上]1. 找到每一个商品在那个一个仓库有库存
+        for (OrderItemVo orderItemVo : skuStockLockVo.getLocks()) {
+            // 查询当前商品有库存的仓库
+            List<Long> wareIds = this.baseMapper.selectSkuHasStockWare(orderItemVo.getSkuId());
+            // 没有仓库有库存，不用继续
+            if (CollectionUtils.isEmpty(wareIds)) {
+                throw new NoStockException(orderItemVo.getSkuId());
+            }
+            // 依次锁定库存
+            boolean skuLock = false;
+            for (Long wareId : wareIds) {
+                // 锁库存
+                Long stockLock = this.baseMapper.skuStockLock(orderItemVo.getSkuId(), wareId, orderItemVo.getCount());
+                // 当前仓库库存锁定失败，下一个
+                if(stockLock > 0){
+                    skuLock = true;
+                    break;
+                }
+            }
+            // 全部仓库都库存锁定失败
+            if(!skuLock){
+                throw new NoStockException(orderItemVo.getSkuId());
+            }
+        }
     }
 
 

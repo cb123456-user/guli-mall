@@ -66,6 +66,11 @@ public class OrderConfirmVo {
      */
     private Map<Long, Boolean> stocks;
 
+    /**
+     * 订单提交幂等性标识
+     */
+    private String orderToken;
+
     public Integer getCount() {
         int num = 0;
         if (!CollectionUtils.isEmpty(items)) {

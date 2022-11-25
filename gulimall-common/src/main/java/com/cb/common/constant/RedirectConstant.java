@@ -9,4 +9,6 @@ public class RedirectConstant {
     public static final String INDEX_HTML_URL = "redirect:http://www.gulimall.com";
 
     public static final String LOGIN_HTML = "http://auth.gulimall.com/login.html";
+
+    public static final String ORDER_CONFIRM_URL = "redirect:http://order.gulimall.com/toTrade";
 }

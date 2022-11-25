@@ -14,6 +14,7 @@ import lombok.Getter;
  *  13 购物车
  *  14 物流
  *  15用户
+ *  23 仓库
  */
 
 @AllArgsConstructor
@@ -28,8 +29,9 @@ public enum BzipCodeEnum {
 
     USER_EXIST_EXCEPTION(15001, "用户存在"),
     PHONE_EXIST_EXCEPTION(15002, "手机号存在"),
-    LOGIN_VALID_EXCEPTION(15003, "用户密码错误")
+    LOGIN_VALID_EXCEPTION(15003, "用户密码错误"),
 
+    NO_STOCK_EXCEPTION(23001, "商品库存不足")
     ;
 
 
