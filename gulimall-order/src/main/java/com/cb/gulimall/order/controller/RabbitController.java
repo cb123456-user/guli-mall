@@ -1,5 +1,6 @@
 package com.cb.gulimall.order.controller;
 
+import com.cb.gulimall.order.entity.OrderEntity;
 import com.cb.gulimall.order.entity.OrderReturnReasonEntity;
 import com.cb.gulimall.order.entity.RefundInfoEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,19 @@ public class RabbitController {
 
 
         }
+
+        return "ok";
+    }
+
+    @GetMapping("/sendOrderMessage")
+    public String sendOrderMessage() {
+
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderSn(UUID.randomUUID().toString().replace("-", ""));
+        orderEntity.setCreateTime(new Date());
+
+        rabbitTemplate.convertAndSend("order-event-exchange", "order.create.order", orderEntity, new CorrelationData(UUID.randomUUID().toString()));
+        System.out.println("发送订单: " +  orderEntity.getOrderSn());
 
         return "ok";
     }
