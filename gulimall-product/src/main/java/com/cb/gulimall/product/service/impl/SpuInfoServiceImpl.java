@@ -13,6 +13,7 @@ import com.cb.gulimall.product.feign.SearchFeignService;
 import com.cb.gulimall.product.feign.WareFeignService;
 import com.cb.gulimall.product.service.*;
 import com.cb.gulimall.product.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +91,8 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
      * @param vo
      */
     @Override
-    @Transactional
+//    @Transactional
+    @GlobalTransactional
     public void saveApuInfo(SpuSaveVo vo) {
 
         // 1.保存spu基本信息 pms_spu_info

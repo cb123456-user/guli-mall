@@ -8,6 +8,9 @@ spring:
     nacos:
       discovery:
         server-addr: 1.15.107.138:8848
+    alibaba:
+      seata:
+        tx-service-group: order-service-group
   datasource:
     url: jdbc:mysql://1.15.107.138:3306/gulimall-oms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root

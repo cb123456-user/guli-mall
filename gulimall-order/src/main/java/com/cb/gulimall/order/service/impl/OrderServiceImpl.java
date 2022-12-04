@@ -15,6 +15,7 @@ import com.cb.gulimall.order.feign.WareFeignService;
 import com.cb.gulimall.order.interceptor.OrderLoginInterceptor;
 import com.cb.gulimall.order.service.OrderItemService;
 import com.cb.gulimall.order.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -128,7 +129,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         return orderConfirmVo;
     }
 
-    @Transactional(rollbackFor = NoStockException.class)
+    @GlobalTransactional
+//    @Transactional(rollbackFor = NoStockException.class)
     @Override
     public SubmitOrderResponseVo orderSubmit(OrderSubmitVo orderSubmitVo) {
         SubmitOrderResponseVo responseVo = new SubmitOrderResponseVo();
@@ -171,6 +173,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             String msg = (String) stockLockResponse.get("msg");
             throw new NoStockException("库存锁定失败：" + msg);
         }
+
+//        int i = 1/0;
 
         responseVo.setOrder(orderCreateVo.getOrderEntity());
 

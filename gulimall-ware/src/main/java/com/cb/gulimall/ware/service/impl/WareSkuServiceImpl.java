@@ -102,7 +102,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         return stockVos;
     }
 
-    @Transactional(rollbackFor = NoStockException.class)
+//    @Transactional(rollbackFor = NoStockException.class)
     @Override
     public void skuStockLock(SkuStockLockVo skuStockLockVo) {
 

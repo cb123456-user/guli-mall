@@ -18,6 +18,11 @@ spring:
       secret-key: wTfzor3WQwICo9qQM2KDGTYSNVPNxH
       oss:
         endpoint: oss-cn-shanghai.aliyuncs.com
+    alibaba:
+      seata:
+        # 默认注册事务组名：${spring.application.name}-fescar-service-group
+        # 修改注册事务组名，必须和file.conf中的配置保持一致
+        tx-service-group: product-service-group
   # 输出时间格式统一处理
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
