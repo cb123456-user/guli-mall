@@ -2,9 +2,11 @@ package com.cb.gulimall.order.service.impl;
 
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.cb.common.constant.CartConstant;
 import com.cb.common.constant.OrderConstant;
 import com.cb.common.enume.OrderStatusEnum;
 import com.cb.common.exception.NoStockException;
+import com.cb.common.to.OrderTo;
 import com.cb.common.utils.R;
 import com.cb.common.vo.MemberInfoVo;
 import com.cb.gulimall.order.entity.OrderItemEntity;
@@ -16,6 +18,9 @@ import com.cb.gulimall.order.interceptor.OrderLoginInterceptor;
 import com.cb.gulimall.order.service.OrderItemService;
 import com.cb.gulimall.order.vo.*;
 import io.seata.spring.annotation.GlobalTransactional;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -67,6 +72,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -129,8 +137,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         return orderConfirmVo;
     }
 
-    @GlobalTransactional
-//    @Transactional(rollbackFor = NoStockException.class)
+    // seata 处理并发行不高，使用可靠消息+最终一致性
+//    @GlobalTransactional
+    @Transactional
     @Override
     public SubmitOrderResponseVo orderSubmit(OrderSubmitVo orderSubmitVo) {
         SubmitOrderResponseVo responseVo = new SubmitOrderResponseVo();
@@ -176,9 +185,59 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
 //        int i = 1/0;
 
+        // 订单创建成功的消息
+        rabbitTemplate.convertAndSend(
+                "order-event-exchange",
+                "order.create.order",
+                orderCreateVo.getOrderEntity(),
+                new CorrelationData(UUID.randomUUID().toString())
+        );
+
+        // 删除购物车里的数据
+        stringRedisTemplate.delete(CartConstant.CART_KEY_PREFIX + memberInfoVo.getId());
+
         responseVo.setOrder(orderCreateVo.getOrderEntity());
 
         return responseVo;
+    }
+
+    @Override
+    public OrderEntity selectOrderStatus(String orderSn) {
+        return this.getOne(new QueryWrapper<OrderEntity>().lambda().eq(OrderEntity::getOrderSn, orderSn));
+    }
+
+    /**
+     * 为了防止解锁库存在订单前执行后导致库存无法解锁，订单关闭后再发一个消息进行补偿
+     *
+     * @param orderEntity
+     */
+    @Override
+    public void closeOrder(OrderEntity orderEntity) {
+        OrderEntity order = this.getById(orderEntity);
+        // 待付款的才能关闭
+        if (OrderStatusEnum.CREATE_NEW.getCode().equals(order.getStatus())) {
+            //代付款状态进行关单
+            OrderEntity orderUpdate = new OrderEntity();
+            orderUpdate.setId(order.getId());
+            orderUpdate.setStatus(OrderStatusEnum.CANCLED.getCode());
+            this.updateById(orderUpdate);
+
+            // 发送消息给MQ
+            OrderTo orderTo = new OrderTo();
+            BeanUtils.copyProperties(order, orderTo);
+
+            try {
+                //TODO 确保每个消息发送成功，给每个消息做好日志记录，(给数据库保存每一个详细信息)保存每个消息的详细信息
+                rabbitTemplate.convertAndSend(
+                        "order-event-exchange",
+                        "order.release.other",
+                        orderTo,
+                        new CorrelationData(UUID.randomUUID().toString())
+                );
+            } catch (Exception e) {
+                //TODO 定期扫描数据库，重新发送失败的消息
+            }
+        }
     }
 
     private void saveOrder(OrderCreateVo orderCreateVo) {

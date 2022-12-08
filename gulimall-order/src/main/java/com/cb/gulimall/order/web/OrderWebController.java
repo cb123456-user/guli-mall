@@ -74,7 +74,7 @@ public class OrderWebController {
 
             return RedirectConstant.ORDER_CONFIRM_URL;
 
-        } catch (NoStockException e) {
+        } catch (Exception e) {
             log.error("submitOrder execute fail, param {}, error {}", JSON.toJSONString(orderSubmitVo), e);
             redirectAttributes.addFlashAttribute("msg", "下单失败:" + e.getMessage());
             return RedirectConstant.ORDER_CONFIRM_URL;

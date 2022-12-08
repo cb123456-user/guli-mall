@@ -20,11 +20,11 @@ import java.util.Map;
 @Configuration
 public class MyRabbitMqConfig {
 
-    @RabbitListener(queues = {"order.release.order.queue"})
-    public void receiveMessageTest(Message message, OrderEntity orderEntity, Channel channel) throws IOException {
-        System.out.println("接收到过期订单：" + orderEntity.getOrderSn());
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-    }
+//    @RabbitListener(queues = {"order.release.order.queue"})
+//    public void receiveMessageTest(Message message, OrderEntity orderEntity, Channel channel) throws IOException {
+//        System.out.println("接收到过期订单：" + orderEntity.getOrderSn());
+//        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+//    }
 
     @Bean
     public Queue orderDelayQueue() {
@@ -32,7 +32,7 @@ public class MyRabbitMqConfig {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", "order-event-exchange");
         arguments.put("x-dead-letter-routing-key", "order.release.order");
-        arguments.put("x-message-ttl", 5000);
+        arguments.put("x-message-ttl", 60000);
         return new Queue("order.delay.queue", true, false, false, arguments);
     }
 
@@ -68,5 +68,19 @@ public class MyRabbitMqConfig {
                 "order.release.order",
                 null
         );
+    }
+
+    /**
+     * 订单释放直接和库存释放进行绑定
+     * @return
+     */
+    @Bean
+    public Binding orderReleaseOtherBinding() {
+
+        return new Binding("stock.release.stock.queue",
+                Binding.DestinationType.QUEUE,
+                "order-event-exchange",
+                "order.release.other.#",
+                null);
     }
 }

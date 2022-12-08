@@ -36,4 +36,15 @@ public class WareConstant {
         private int code;
         private String msg;
     }
+
+    @AllArgsConstructor
+    @Getter
+    public enum WareOrderTaskStatusEnum {
+        LOCKED(1, "已锁定"),
+        UNLOCK(2, "已解锁"),
+        REDUCE(3, "已扣减");
+
+        private Integer status;
+        private String msg;
+    }
 }
